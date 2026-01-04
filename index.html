@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>VALIDASI KOIN TVTOTO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -21,7 +22,7 @@
             min-height: 100vh;
             padding: 20px;
             position: relative;
-            overflow-x: hidden;
+            overflow-x: auto;
         }
 
         body::before {
@@ -47,7 +48,7 @@
         .container {
             display: flex;
             gap: 30px;
-            max-width: 1800px;
+            max-width: 2200px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
@@ -66,6 +67,7 @@
                 inset 0 0 40px rgba(0, 255, 204, 0.05);
             transform-style: preserve-3d;
             transition: transform 0.3s ease;
+            min-width: 800px;
         }
 
         .main:hover {
@@ -558,6 +560,135 @@
             color: rgba(0, 255, 204, 0.4);
         }
 
+        .file-upload-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.2), rgba(0, 150, 255, 0.2));
+            border: 2px dashed rgba(0, 255, 204, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #00ffcc;
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .file-upload-label:hover {
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.3), rgba(0, 150, 255, 0.3));
+            border-color: #00ffcc;
+            box-shadow: 0 5px 15px rgba(0, 200, 255, 0.3);
+        }
+
+        .file-upload-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: rgba(0, 255, 204, 0.8);
+            text-align: center;
+        }
+
+        .config-panel {
+            background: rgba(5, 5, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 204, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .bank-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .bank-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(0, 255, 204, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .bank-item:hover {
+            background: rgba(0, 255, 204, 0.2);
+        }
+
+        .bank-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #00ffcc;
+        }
+
+        .bank-label {
+            color: #00ffcc;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .horizontal-table {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .horizontal-table table {
+            min-width: 800px;
+        }
+
+        .config-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .config-buttons button {
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+
+        .income-summary {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.15), rgba(0, 200, 255, 0.15));
+            border: 2px solid rgba(0, 255, 204, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .income-value {
+            font-size: 2em;
+            font-weight: 900;
+            color: #00ffcc;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
+            margin: 10px 0;
+        }
+
+        .income-label {
+            font-size: 1.2em;
+            color: rgba(0, 255, 204, 0.9);
+            margin-bottom: 10px;
+        }
+
         @media (max-width: 1200px) {
             .container {
                 flex-direction: column;
@@ -589,13 +720,34 @@
         <div class="main">
             <h1>VALIDASI KOIN TVTOTO</h1>
             
+            <div class="file-upload-container">
+                <label for="fileInput" class="file-upload-label">
+                    <span>📁 Unggah File Excel</span>
+                </label>
+                <input type="file" id="fileInput" class="file-upload-input" accept=".xlsx,.xls,.csv" onchange="handleFileUpload(event)">
+                <div id="fileInfo" class="file-info"></div>
+            </div>
+            
             <textarea id="dataInput" placeholder="Masukkan data transaksi (paste langsung dari Excel/Sheets; setiap baris satu transaksi)"></textarea>
             
             <div class="button-group">
                 <button onclick="tambahData()">➕ Tambah Data</button>
                 <button onclick="hapusData()">🗑️ Hapus Semua Data</button>
                 <button onclick="hitungJumlahDanTotalTransaksi()">📊 Hitung Jumlah & Total</button>
+                <button onclick="generateHorizontalReport()">📈 Laporan Horizontal</button>
                 <button onclick="downloadCSV()">💾 Download CSV</button>
+                <button onclick="downloadExcel()">📊 Download Excel</button>
+            </div>
+
+            <div class="config-panel" id="configPanel" style="display: none;">
+                <h3>⚙️ Konfigurasi Tampilan Laporan</h3>
+                <div class="small">Pilih bank yang ingin ditampilkan dalam laporan horizontal:</div>
+                <div id="bankConfigList" class="bank-config"></div>
+                <div class="config-buttons">
+                    <button onclick="selectAllBanks()">✅ Pilih Semua</button>
+                    <button onclick="deselectAllBanks()">❌ Batal Pilih</button>
+                    <button onclick="applyConfig()">🔄 Terapkan Konfigurasi</button>
+                </div>
             </div>
 
             <h2>📑 Hasil Rekap:</h2>
@@ -604,6 +756,13 @@
 
         <div class="sidebar">
             <h3>Referensi Operator</h3>
+            <div class="file-upload-container">
+                <label for="refFileInput" class="file-upload-label">
+                    <span>📁 Unggah File Referensi Operator</span>
+                </label>
+                <input type="file" id="refFileInput" class="file-upload-input" accept=".xlsx,.xls,.csv" onchange="handleRefFileUpload(event)">
+                <div id="refFileInfo" class="file-info"></div>
+            </div>
             <textarea id="refInput" placeholder="Tempel data operator (kolom deposit & withdraw) di sini..."></textarea>
             <button onclick="setReferensi()">💾 Simpan Referensi</button>
 
@@ -630,6 +789,12 @@
 
             <h3>👤 Daftar Operator</h3>
             <ul id="operatorList" class="operator-list"></ul>
+
+            <div class="income-summary">
+                <div class="income-label">💰 Total Pendapatan Bersih</div>
+                <div id="totalIncome" class="income-value">Rp 0</div>
+                <div class="small">Deposit - Withdraw</div>
+            </div>
         </div>
     </div>
 
@@ -640,6 +805,8 @@
         let operatorReferensi = {};
         let operatorWithdraw = {};
         let currentFilter = 'all';
+        let selectedBanks = new Set();
+        let allBanks = new Set();
 
         function tokenizeLine(line){
             line = line.replace(/\u00A0/g,' ').trim();
@@ -656,6 +823,82 @@
             }
             tokens = tokens.map(t => t.replace(/^"|"$/g,'').trim());
             return tokens;
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.textContent = `File dipilih: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    let allData = [];
+                    workbook.SheetNames.forEach(sheetName => {
+                        const worksheet = workbook.Sheets[sheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                        allData = allData.concat(jsonData);
+                    });
+                    
+                    let textData = '';
+                    allData.forEach(row => {
+                        if (row.length > 0) {
+                            textData += row.join('\t') + '\n';
+                        }
+                    });
+                    
+                    document.getElementById('dataInput').value = textData;
+                    alert(`✅ File "${file.name}" berhasil dimuat! Klik "Tambah Data" untuk memproses.`);
+                } catch (error) {
+                    console.error('Error reading file:', error);
+                    alert('❌ Gagal membaca file. Pastikan file adalah format Excel yang valid.');
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        function handleRefFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const refFileInfo = document.getElementById('refFileInfo');
+            refFileInfo.textContent = `File dipilih: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    let allData = [];
+                    workbook.SheetNames.forEach(sheetName => {
+                        const worksheet = workbook.Sheets[sheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                        allData = allData.concat(jsonData);
+                    });
+                    
+                    let textData = '';
+                    allData.forEach(row => {
+                        if (row.length > 0) {
+                            textData += row.join('\t') + '\n';
+                        }
+                    });
+                    
+                    document.getElementById('refInput').value = textData;
+                    alert(`✅ File referensi "${file.name}" berhasil dimuat! Klik "Simpan Referensi" untuk memproses.`);
+                } catch (error) {
+                    console.error('Error reading reference file:', error);
+                    alert('❌ Gagal membaca file referensi. Pastikan file adalah format Excel yang valid.');
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
         }
 
         function tambahData(){
@@ -707,6 +950,7 @@
             document.getElementById('dataInput').value='';
             updateOperatorList();
             filterOperatorList();
+            updateIncomeSummary();
             alert('✅ Data berhasil disimpan! (Deposit + Withdraw)');
         }
 
@@ -716,12 +960,20 @@
             daftarOperator.clear();
             document.getElementById('hasil').innerHTML = '';
             document.getElementById('operatorList').innerHTML = '';
+            document.getElementById('fileInfo').textContent = '';
+            document.getElementById('refFileInfo').textContent = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('refFileInput').value = '';
+            document.getElementById('configPanel').style.display = 'none';
+            document.getElementById('totalIncome').textContent = 'Rp 0';
             for(const op in operatorReferensi){
                 operatorReferensi[op].status = false;
                 operatorReferensi[op].hasWithdraw = false;
                 operatorReferensi[op].withdrawStatus = false;
             }
             operatorWithdraw = {};
+            selectedBanks.clear();
+            allBanks.clear();
             alert('🗑 Semua data dihapus!');
         }
 
@@ -769,6 +1021,206 @@
             document.getElementById('hasil').innerHTML = hasilOutput;
         }
 
+        function generateHorizontalReport() {
+            if(!dataTransaksi.length && !dataWithdraw.length){ 
+                alert('Tidak ada data transaksi untuk dibuat laporan.'); 
+                return; 
+            }
+
+            // Collect all banks
+            allBanks.clear();
+            dataTransaksi.forEach(item => {
+                const bank = (item[3]||'Unknown').toString();
+                allBanks.add(bank);
+            });
+            dataWithdraw.forEach(item => {
+                const bank = (item[6]||'Unknown').toString();
+                allBanks.add(bank);
+            });
+
+            // Show config panel
+            showBankConfig();
+        }
+
+        function showBankConfig() {
+            const configPanel = document.getElementById('configPanel');
+            const bankConfigList = document.getElementById('bankConfigList');
+            
+            configPanel.style.display = 'block';
+            bankConfigList.innerHTML = '';
+
+            // Initialize selected banks if empty
+            if(selectedBanks.size === 0) {
+                selectedBanks = new Set(allBanks);
+            }
+
+            allBanks.forEach(bank => {
+                const bankItem = document.createElement('div');
+                bankItem.className = 'bank-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'bank-checkbox';
+                checkbox.id = `bank_${bank}`;
+                checkbox.checked = selectedBanks.has(bank);
+                checkbox.onchange = function() {
+                    if(this.checked) {
+                        selectedBanks.add(bank);
+                    } else {
+                        selectedBanks.delete(bank);
+                    }
+                };
+
+                const label = document.createElement('label');
+                label.className = 'bank-label';
+                label.htmlFor = `bank_${bank}`;
+                label.textContent = bank;
+
+                bankItem.appendChild(checkbox);
+                bankItem.appendChild(label);
+                bankConfigList.appendChild(bankItem);
+            });
+        }
+
+        function selectAllBanks() {
+            selectedBanks = new Set(allBanks);
+            document.querySelectorAll('.bank-checkbox').forEach(cb => cb.checked = true);
+        }
+
+        function deselectAllBanks() {
+            selectedBanks.clear();
+            document.querySelectorAll('.bank-checkbox').forEach(cb => cb.checked = false);
+        }
+
+        function applyConfig() {
+            if(selectedBanks.size === 0) {
+                alert('Pilih minimal satu bank untuk ditampilkan!');
+                return;
+            }
+            createHorizontalTable();
+        }
+
+        function createHorizontalTable() {
+            const hasilDeposit = {};
+            const hasilWithdraw = {};
+            
+            // Calculate deposit data
+            dataTransaksi.forEach(item=>{
+                const bankPembayaran = (item[3]||'Unknown').toString();
+                if(selectedBanks.has(bankPembayaran)) {
+                    const jumlah = parseInt((item[2]||'0').toString().replace(/[^0-9\-]/g,''),10) || 0;
+                    if(!hasilDeposit[bankPembayaran]) hasilDeposit[bankPembayaran] = { total:0, count:0 };
+                    hasilDeposit[bankPembayaran].total += jumlah;
+                    hasilDeposit[bankPembayaran].count++;
+                }
+            });
+
+            // Calculate withdraw data
+            dataWithdraw.forEach(item=>{
+                const bankPenerima = (item[6]||'Unknown').toString();
+                if(selectedBanks.has(bankPenerima)) {
+                    const jumlah = parseInt((item[2]||'0').toString().replace(/[^0-9\-]/g,''),10) || 0;
+                    if(!hasilWithdraw[bankPenerima]) hasilWithdraw[bankPenerima] = { total:0, count:0 };
+                    hasilWithdraw[bankPenerima].total += jumlah;
+                    hasilWithdraw[bankPenerima].count++;
+                }
+            });
+
+            // Create horizontal table
+            let tableHTML = `
+            <div class="horizontal-table">
+                <h3>📊 Laporan Horizontal Bank</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Bank</th>
+                            <th colspan="2">Deposit</th>
+                            <th colspan="2">Withdraw</th>
+                            <th colspan="2">Net</th>
+                        </tr>
+                        <tr>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            let grandTotalDeposit = 0;
+            let grandTotalWithdraw = 0;
+            let grandCountDeposit = 0;
+            let grandCountWithdraw = 0;
+
+            selectedBanks.forEach(bank => {
+                const deposit = hasilDeposit[bank] || { total: 0, count: 0 };
+                const withdraw = hasilWithdraw[bank] || { total: 0, count: 0 };
+                const netTotal = deposit.total - withdraw.total;
+                const netCount = deposit.count - withdraw.count;
+
+                grandTotalDeposit += deposit.total;
+                grandTotalWithdraw += withdraw.total;
+                grandCountDeposit += deposit.count;
+                grandCountWithdraw += withdraw.count;
+
+                const netColor = netTotal >= 0 ? '#00ffcc' : '#ff6b6b';
+                
+                tableHTML += `
+                <tr>
+                    <td style="font-weight: bold;">${bank}</td>
+                    <td>${deposit.count}</td>
+                    <td>${deposit.total.toLocaleString()}</td>
+                    <td>${withdraw.count}</td>
+                    <td>${withdraw.total.toLocaleString()}</td>
+                    <td>${netCount}</td>
+                    <td style="color: ${netColor}; font-weight: bold;">${netTotal.toLocaleString()}</td>
+                </tr>`;
+            });
+
+            const grandNet = grandTotalDeposit - grandTotalWithdraw;
+            const grandNetCount = grandCountDeposit - grandCountWithdraw;
+            const grandNetColor = grandNet >= 0 ? '#00ffcc' : '#ff6b6b';
+
+            tableHTML += `
+                <tr style="background: rgba(0, 255, 204, 0.2); font-weight: bold;">
+                    <td>GRAND TOTAL</td>
+                    <td>${grandCountDeposit}</td>
+                    <td>${grandTotalDeposit.toLocaleString()}</td>
+                    <td>${grandCountWithdraw}</td>
+                    <td>${grandTotalWithdraw.toLocaleString()}</td>
+                    <td>${grandNetCount}</td>
+                    <td style="color: ${grandNetColor};">Rp ${grandNet.toLocaleString()}</td>
+                </tr>
+                </tbody>
+                </table>
+            </div>`;
+
+            document.getElementById('hasil').innerHTML = tableHTML;
+            document.getElementById('configPanel').style.display = 'none';
+        }
+
+        function updateIncomeSummary() {
+            let totalDeposit = 0;
+            let totalWithdraw = 0;
+
+            dataTransaksi.forEach(item => {
+                const jumlah = parseInt((item[2]||'0').toString().replace(/[^0-9\-]/g,''),10) || 0;
+                totalDeposit += jumlah;
+            });
+
+            dataWithdraw.forEach(item => {
+                const jumlah = parseInt((item[2]||'0').toString().replace(/[^0-9\-]/g,''),10) || 0;
+                totalWithdraw += jumlah;
+            });
+
+            const netIncome = totalDeposit - totalWithdraw;
+            const incomeElement = document.getElementById('totalIncome');
+            incomeElement.textContent = `Rp ${netIncome.toLocaleString()}`;
+            incomeElement.style.color = netIncome >= 0 ? '#00ffcc' : '#ff6b6b';
+        }
+
         function downloadCSV(){
             if(!dataTransaksi.length && !dataWithdraw.length){ alert('Tidak ada data transaksi untuk di-download.'); return; }
             let csv = "Akun Pemain,Tanggal,Jumlah,Bank Pembayaran,No Rek Pembayar,Nama Rek Pembayar,Bank Penerima,No Rek Penerima,Nama Rek Penerima,Akun Operator,Jenis Operasi,Status\n";
@@ -780,6 +1232,71 @@
             link.href = URL.createObjectURL(blob);
             link.download = 'transaksi.csv';
             link.click();
+        }
+
+        function downloadExcel() {
+            if(!dataTransaksi.length && !dataWithdraw.length){ 
+                alert('Tidak ada data transaksi untuk di-download.'); 
+                return; 
+            }
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+
+            // Transaction data sheet
+            const transactionData = [
+                ["Akun Pemain", "Tanggal", "Jumlah", "Bank Pembayaran", "No Rek Pembayar", "Nama Rek Pembayar", 
+                 "Bank Penerima", "No Rek Penerima", "Nama Rek Penerima", "Akun Operator", "Jenis Operasi", "Status"]
+            ];
+            [...dataTransaksi, ...dataWithdraw].forEach(row => {
+                transactionData.push(row);
+            });
+            const wsTransactions = XLSX.utils.aoa_to_sheet(transactionData);
+            XLSX.utils.book_append_sheet(wb, wsTransactions, "Transaksi");
+
+            // Summary sheet
+            const hasilDeposit = {};
+            dataTransaksi.forEach(item=>{
+                const bankPembayaran = (item[3]||'Unknown').toString();
+                const jumlah = parseInt((item[2]||'0').toString().replace(/[^0-9\-]/g,''),10) || 0;
+                if(!hasilDeposit[bankPembayaran]) hasilDeposit[bankPembayaran] = { total:0, count:0 };
+                hasilDeposit[bankPembayaran].total += jumlah;
+                hasilDeposit[bankPembayaran].count++;
+            });
+
+            const hasilWithdraw = {};
+            dataWithdraw.forEach(item=>{
+                const bankPenerima = (item[6]||'Unknown').toString();
+                const jumlah = parseInt((item[2]||'0').toString().replace(/[^0-9\-]/g,''),10) || 0;
+                if(!hasilWithdraw[bankPenerima]) hasilWithdraw[bankPenerima] = { total:0, count:0 };
+                hasilWithdraw[bankPenerima].total += jumlah;
+                hasilWithdraw[bankPenerima].count++;
+            });
+
+            const summaryData = [
+                ["Bank", "Deposit Count", "Deposit Total", "Withdraw Count", "Withdraw Total", "Net Total"]
+            ];
+            
+            const allBanks = new Set([...Object.keys(hasilDeposit), ...Object.keys(hasilWithdraw)]);
+            allBanks.forEach(bank => {
+                const deposit = hasilDeposit[bank] || { total: 0, count: 0 };
+                const withdraw = hasilWithdraw[bank] || { total: 0, count: 0 };
+                summaryData.push([
+                    bank,
+                    deposit.count,
+                    deposit.total,
+                    withdraw.count,
+                    withdraw.total,
+                    deposit.total - withdraw.total
+                ]);
+            });
+
+            const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Summary");
+
+            // Save file
+            XLSX.writeFile(wb, `transaksi_${new Date().toISOString().split('T')[0]}.xlsx`);
+            alert('✅ File Excel berhasil di-download!');
         }
 
         function setReferensi(){
